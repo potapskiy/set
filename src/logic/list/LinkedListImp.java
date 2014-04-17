@@ -1,172 +1,212 @@
 package logic.list;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
-public class LinkedListImp<E> implements List<E> {
+public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 
-	private Node<E> previous;
-	private Node<E> next;
-	private Node<E> first = new Node<E>();
-
-	private int size = 0;
+	private Node<E> head;
+	private int listCount;
 
 	public LinkedListImp() {
+		head = null;
+		listCount = 0;
+	}
+
+	public void add(E data) {
+
+		if (head == null) {
+			head = new Node<E>(data);
+			return;
+		}
 		
-		first.setNext(null); 
-		first.setPrevious(null);
+		
+		
+		if (contains(data)){
+			return;
+		}
+		
+		Node<E> temp = new Node<E>(data);
+		Node<E> current = head;
+		while (current.getNext() != null) {
+			current = current.getNext();
+		}
+		current.setNext(temp);
+		listCount++;
+	}
+	
+	
+	
+	public void addSorted(E data) {
+		
+		
+		
+
+		if (head == null) {
+			head = new Node<E>(data);
+			return;
+		}
+		
+		if (contains(data)){
+			return;
+		}
+		
+		
+		
+		
+		Node<E> temp = new Node<E>(data);
+		Node<E> current = head;
+		Node<E> prev = null;
+		
+		while (current != null) {
+			
+			
+			//System.out.println("STEP: compare" +current.data+" "
+			//+ data+ "  " +  current.compareTo(temp));
+			
+			int compateResult = current.compareTo(temp);
+			
+			if (compateResult == 0) return;
+			
+			if (compateResult > 0){
+				temp.setNext(current);
+				
+				if (prev != null){
+					prev.setNext(temp);
+				}else{
+					head = temp;
+				}
+				listCount++;
+				return;
+			}
+			
+			prev = current;
+			current = current.getNext();
+		}
+		
+		
+		temp.setNext(null);
+		prev.setNext(temp);
+		listCount++;
+		
+		return;
+	}
+	
+	
+	
+	
+
+	public void add(E data, int index) {
+		
+
+		if (head == null) {
+			head = new Node<E>(data);
+			return;
+		}
+		
+		Node<E> temp = new Node<E>(data);
+		Node<E> current = head;
+		for (int i = 1; i < index && current.getNext() != null; i++) {
+			current = current.getNext();
+		}
+		temp.setNext(current.getNext());
+		current.setNext(temp);
+		listCount++;
 	}
 
-	@Override
+	public boolean contains(E x) {
+		for (E tmp : this)
+			if (tmp.equals(x))
+				return true;
+
+		return false;
+	}
+
+	public Object get(int index) {
+		if (index <= 0)
+			return null;
+
+		Node<E> current = head.getNext();
+		for (int i = 1; i < index; i++) {
+			if (current.getNext() == null)
+				return null;
+
+			current = current.getNext();
+		}
+		return current.getData();
+	}
+
+	public boolean remove(Object o) {
+		
+		
+		if (head == null) return false;
+		
+		Node<E> current = head;
+		
+		if (current.equals(o)) {
+			head = current.getNext();
+			listCount--;
+			return true;
+		}
+
+		for (int i = 0; i < listCount; i++) {
+
+			if (current.getNext() == null)
+				return false;
+
+			if (current.getNext().equals(o)) {
+				current.setNext(current.getNext().getNext());
+				listCount--;
+				return true;
+			}
+
+			current = current.getNext();
+		}
+		return false;
+
+	}
+
 	public int size() {
-		return this.size;
+		return listCount;
 	}
 
-	@Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-	@Override
-	public boolean contains(Object o) {
-	    for (int i = 0; i < size(); i++) {
-	        if (get(i).equals(o)) return true;
-	    }
-	    return false;
+	public String toString() {
+		Node<E> current = head;
+		String output = "";
+		while (current != null) {
+			output += "[" + current.getData().toString() + "]";
+			current = current.getNext();
+		}
+		return output;
 	}
 
 	@Override
 	public Iterator<E> iterator() {
-		return null;
+		return new LinkedListIterator();
 	}
 
-	@Override
-	public Object[] toArray() {
-		return new Object[0];
-	}
+	private class LinkedListIterator implements Iterator<E> {
+		private Node<E> nextNode;
 
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return null;
-	}
-
-	@Override
-	public boolean add(E e) {
-		Node<E> node = new Node<E>(e);
-		if (first == null) {
-			first = node;
-		} else {
-			previous = first;
+		public LinkedListIterator() {
+			nextNode = head;
 		}
-		if (size() == 1) {
-			first.setNext(node);
+
+		public boolean hasNext() {
+			return nextNode != null;
 		}
-		size++;
 
-		return true;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-	    Node<E> node = first;
-	    for(int i=0; i<size(); i++){
-	        if(node.equals(o)){
-	            node.getPrevious().setNext(node.getNext());
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return false;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends E> c) {
-		return false;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends E> c) {
-		return false;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return false;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return false;
-	}
-
-	@Override
-	public void clear() {
-
-	}
-
-	@Override
-	public E get(int index) {
-	    E element;
-	    if (index >= 0 && index < size()) {
-	        element = getByIndex(index).getT();
-	    } else throw new IndexOutOfBoundsException();
-	    return element;
-	}
-
-	@Override
-	public E set(int index, E element) {
-		return null;
-	}
-
-	@Override
-	public void add(int index, E element) {
-
-	}
-
-	@Override
-	public E remove(int index) {
-		return null;
-	}
-
-	@Override
-	public int indexOf(Object o) {
-		return 0;
-	}
-
-	@Override
-	public int lastIndexOf(Object o) {
-		return 0;
-	}
-
-	@Override
-	public ListIterator<E> listIterator() {
-		return null;
-	}
-
-	@Override
-	public ListIterator<E> listIterator(int index) {
-		return null;
-	}
-
-	@Override
-	public List<E> subList(int fromIndex, int toIndex) {
-		return null;
-	}
-
-	private Node<E> getByIndex(int index) {
-		Node<E> node = null;
-		if (!isEmpty() && (index >= 0 && index < size)) {
-			node = first;
-			for (int i = 1; i <= index; i++) {
-				node = node.getNext();
-			}
+		public E next() {
+			if (!hasNext())
+				throw new NoSuchElementException();
+			E res = nextNode.data;
+			nextNode = nextNode.next;
+			return res;
 		}
-		return node;
+
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
+
 }

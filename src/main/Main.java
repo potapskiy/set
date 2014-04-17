@@ -7,6 +7,7 @@ import java.util.List;
 
 import logic.ISet;
 import logic.SetFactory;
+import logic.list.LinkedListImp;
 
 public class Main {
 	
@@ -14,32 +15,28 @@ public class Main {
 		System.out.println("OK");
 		
 		
-		List<Integer> list = new LinkedList<Integer>();
+		LinkedListImp<Integer> l = new LinkedListImp<Integer>();
 		
-		list.add(10);
-		list.add(20);
-		list.add(30);
-		list.add(40);
+		l.addSorted(5);
 		
+		l.addSorted(6);
 		
-//		list.remove(2);
+		l.addSorted(7);
 		
-		Iterator<Integer> it = list.iterator();
-	    while(it.hasNext()){
-	        Integer element = it.next();
-	        if(element == 30){
-	            it.remove();
-	        }
-	    }
-	    
-	    
-		for(int i: list){
+		l.addSorted(7);
+		
+		l.remove(6);
+		l.remove(5);
+		l.remove(7);
+		l.remove(8);
+		
+		//System.out.println(Integer.compare(5, 6));
+		
+		for(int i: l){
 			System.out.println(i);
 		}
 		
-		
-		//ISet c = SetFactory.getSet(2,1,0);
-		//c.union(b);
+		System.out.println(l.toString());
 		
 	}
 
