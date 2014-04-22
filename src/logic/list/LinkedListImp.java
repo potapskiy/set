@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 
 	private Node<E> head;
-	private int listCount;
+	private int listCount = 0;
 
 	public LinkedListImp() {
 		head = null;
@@ -17,6 +17,7 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 
 		if (head == null) {
 			head = new Node<E>(data);
+			listCount++;
 			return;
 		}
 		
@@ -122,12 +123,12 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 		return false;
 	}
 
-	public Object get(int index) {
-		if (index <= 0)
+	public E get(int index) {
+		if (index < 0)
 			return null;
 
-		Node<E> current = head.getNext();
-		for (int i = 1; i < index; i++) {
+		Node<E> current = head;
+		for (int i = 0; i < index; i++) {
 			if (current.getNext() == null)
 				return null;
 

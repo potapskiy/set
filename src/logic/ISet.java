@@ -1,6 +1,8 @@
 package logic;
 
-public interface ISet<T> {
+import logic.list.LinkedListImp;
+
+public interface ISet<T extends Comparable<T>> {
 
 	public ISet<T> union(ISet<T> b);
 
@@ -23,5 +25,10 @@ public interface ISet<T> {
 	public T max();
 
 	public boolean equal(ISet<T> b);
+	
+	public LinkedListImp<T> getList();
+	
+	@Override
+	public String toString();
 
 }

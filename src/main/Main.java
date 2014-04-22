@@ -5,7 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import utils.Constants;
 import logic.ISet;
+import logic.LinkedListSet;
 import logic.SetFactory;
 import logic.list.LinkedListImp;
 
@@ -15,28 +17,32 @@ public class Main {
 		System.out.println("OK");
 		
 		
-		LinkedListImp<Integer> l = new LinkedListImp<Integer>();
 		
-		l.addSorted(5);
 		
-		l.addSorted(6);
+		System.out.println(Integer.compare(1, 4));
 		
-		l.addSorted(7);
 		
-		l.addSorted(7);
+		ISet<Integer> a = SetFactory.getSet(Constants.LIST_TYPE, Constants.INT_TYPE, 0);
 		
-		l.remove(6);
-		l.remove(5);
-		l.remove(7);
-		l.remove(8);
+		a.insert(5);
+		a.insert(7);
+		a.insert(1);
 		
-		//System.out.println(Integer.compare(5, 6));
 		
-		for(int i: l){
-			System.out.println(i);
-		}
 		
-		System.out.println(l.toString());
+		ISet<Integer> b = SetFactory.getSet(Constants.LIST_TYPE, Constants.INT_TYPE, 0);
+		
+		b.insert(7);
+		b.insert(5);
+		b.insert(2);
+		
+		
+		
+		
+		System.out.println(a.toString());
+		System.out.println(b.toString());
+		
+		
 		
 	}
 

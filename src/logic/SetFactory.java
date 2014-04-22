@@ -3,36 +3,37 @@ package logic;
 import utils.Constants;
 
 public class SetFactory {
-
+	
 	public static ISet getSet(int setType, int dataType, int length) {
 		ISet set = null;
-
-		if (setType == Constants.LIST_TYPE) {
-
+		
+		
+		
+		if (setType == Constants.LIST_TYPE){
+			
 			switch (dataType) {
 			case Constants.INT_TYPE:
-				set = new LinkedListSet<Integer>(dataType);
-				break;
-
+				return new LinkedListSet<Integer>();
+				
 			case Constants.DOUBLE_TYPE:
-				set = new LinkedListSet<Double>(dataType);
-				break;
-
+				return new LinkedListSet<Double>();
+				
 			case Constants.STRING_TYPE:
-				set = new LinkedListSet<String>(dataType);
-				break;
-
+				return new LinkedListSet<String>();
+				
 			case Constants.CHAR_TYPE:
-				set = new LinkedListSet<Character>(dataType);
-				break;
+				return new LinkedListSet<Character>();
+				
 
 			default:
 				break;
 			}
-
+			
 		}
-
+		
 		return set;
 	}
+	
+	
 
 }
