@@ -31,11 +31,12 @@ public class Main {
 		System.out.println(Integer.compare(1, 4));
 		
 		
-		ISet<Integer> a = SetFactory.getSet(Constants.LIST_TYPE, Constants.INT_TYPE, 0);
+		ISet a = SetFactory.getSet(Constants.LIST_TYPE, Constants.INT_TYPE, 0);
 		
 		a.insert(5);
 		a.insert(7);
 		a.insert(1);
+		a.insert("sddsd");
 		
 		
 		
