@@ -1,5 +1,8 @@
 package logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import logic.list.LinkedListImp;
 
 public interface ISet<T extends Comparable<T>> {
@@ -27,6 +30,10 @@ public interface ISet<T extends Comparable<T>> {
 	public boolean equal(ISet<T> b);
 	
 	public LinkedListImp<T> getList();
+	
+	public int getSize();
+	
+	public ArrayList<Pair<T, T>> cartesianProduct(ISet<T> b);
 	
 	@Override
 	public String toString();

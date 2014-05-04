@@ -17,8 +17,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
@@ -40,6 +43,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
 
 import logic.ISet;
+import logic.Pair;
 import logic.SetFactory;
 
 import org.w3c.dom.stylesheets.StyleSheetList;
@@ -61,10 +65,9 @@ public class MainWindow extends JFrame {
 
 	public static int CURRENT_SET_TYPE = Constants.LIST_TYPE;
 	public static int CURRENT_DATA_TYPE = Constants.INT_TYPE;
-	
+
 	public static int CURRENT_ACTIVE_SET = Constants.SET_A;
 	public static int CURRENT_VAL_OPERATION;
-	
 
 	private ISet setA = null;
 	private ISet setB = null;
@@ -75,7 +78,7 @@ public class MainWindow extends JFrame {
 
 	JLabel removeALabel;
 	JLabel removeBLabel;
-	
+
 	JButton okButton;
 	JTextField valueField;
 	JPanel valuePanel;
@@ -92,7 +95,7 @@ public class MainWindow extends JFrame {
 			public void run() {
 
 				createGUI();
-				
+
 				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
 						vectorSetLen);
 				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
@@ -352,12 +355,12 @@ public class MainWindow extends JFrame {
 
 		filePanel.add(setAFileButton);
 		filePanel.add(removeALabel);
-		
+
 		// /////////////////////
 		// ////////////
 		// ////////////
 		// ///////////
-		
+
 		Label setBLabel = new Label("Множина B");
 		setBLabel.setBounds(5, 70, 100, 20);
 		filePanel.add(setBLabel);
@@ -378,7 +381,7 @@ public class MainWindow extends JFrame {
 				FileDialog fileSave = new FileDialog(MainWindow.getInstance(),
 						"Відкрити", FileDialog.LOAD);
 				fileSave.setFile("*.txt");
-				
+
 				int widthWindow = 800;
 				int heightWindow = 600;
 
@@ -417,17 +420,10 @@ public class MainWindow extends JFrame {
 
 		filePanel.add(setBFileButton);
 		filePanel.add(removeBLabel);
-		
-		
-		
-		
-		
-		
-		
-		
-		///////////////
-		/////////////
-		////////
+
+		// /////////////
+		// ///////////
+		// //////
 
 		optionsPanel.add(typePanel);
 		optionsPanel.add(dataTypePanel);
@@ -438,12 +434,12 @@ public class MainWindow extends JFrame {
 	}
 
 	protected void fillSetA() {
-		
+
 		setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
 				vectorSetLen);
-		
+
 		if (!fileNameASet.isEmpty()) {
-			
+
 			try {
 				setA = SetFactory.fillSetFromFile(setA, fileNameASet,
 						CURRENT_DATA_TYPE);
@@ -453,24 +449,21 @@ public class MainWindow extends JFrame {
 						+ "Перевірте правильність типу даних", "Помилка",
 						JOptionPane.ERROR_MESSAGE);
 			}
-			
+
 			setAField.setText(fileNameASet);
 			removeALabel.setEnabled(true);
 		}
 
 		System.out.println(setA.toString());
-		
 
 	}
-	
-	
+
 	protected void fillSetB() {
 		setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
 				vectorSetLen);
-		
-		
+
 		if (!fileNameBSet.isEmpty()) {
-			
+
 			try {
 				setB = SetFactory.fillSetFromFile(setB, fileNameBSet,
 						CURRENT_DATA_TYPE);
@@ -480,13 +473,12 @@ public class MainWindow extends JFrame {
 						+ "Перевірте правильність типу даних", "Помилка",
 						JOptionPane.ERROR_MESSAGE);
 			}
-			
+
 			setBField.setText(fileNameBSet);
 			removeBLabel.setEnabled(true);
 		}
 
 		System.out.println(setB.toString());
-		
 
 	}
 
@@ -496,53 +488,53 @@ public class MainWindow extends JFrame {
 		operationsPanel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(), "Операції"));
 		operationsPanel.setBounds(265, 5, 263, 565);
-		
-		
+
 		JPanel activeSetPanel = new JPanel();
 		activeSetPanel.setLayout(new GridLayout(0, 2));
 		activeSetPanel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(), "Активна множина"));
 		activeSetPanel.setBounds(5, 20, 252, 50);
-		
-		
+
 		JRadioButton setAButton = new JRadioButton("Множина А");
 		JRadioButton setBButton = new JRadioButton("Множина B");
 		setAButton.setSelected(true);
-		
+
 		ButtonGroup activeSetGroup = new ButtonGroup();
-		
+
 		setAButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_ACTIVE_SET = Constants.SET_A;
+				String setName = "Множина А:";
+				console.append(setName + "\n" + getActiveSet().toString() + "\n");	
 			}
 		});
-		
+
 		setBButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_ACTIVE_SET = Constants.SET_B;
-				
+				String setName = "Множина B:";
+				console.append(setName + "\n" + getActiveSet().toString() + "\n");
+
 			}
 		});
-		
+
 		activeSetGroup.add(setAButton);
 		activeSetGroup.add(setBButton);
-		
+
 		activeSetPanel.add(setAButton);
 		activeSetPanel.add(setBButton);
-		
+
 		operationsPanel.add(activeSetPanel);
-		
-		
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(0, 1));
-		buttonPanel.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createEtchedBorder()));
+		buttonPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
+				.createEtchedBorder()));
 		buttonPanel.setBounds(7, 70, 248, 299);
-		
-		
+
 		JRadioButton insert = new JRadioButton("Додати елемент");
 		JRadioButton delete = new JRadioButton("Вилучити елемент");
 		JRadioButton member = new JRadioButton("Належність");
@@ -554,9 +546,10 @@ public class MainWindow extends JFrame {
 		JRadioButton difference = new JRadioButton("Різниця множин");
 		JRadioButton merge = new JRadioButton("Злиття множин");
 		JRadioButton equal = new JRadioButton("Рівність множин");
+		JRadioButton power = new JRadioButton("Потужність множини");
+		JRadioButton product = new JRadioButton("Декартовий добуток");
 		JRadioButton toString = new JRadioButton("Показати множину");
-		
-		
+
 		ButtonGroup operationsGroup = new ButtonGroup();
 		insert.addActionListener(new ActionListener() {
 			@Override
@@ -565,7 +558,7 @@ public class MainWindow extends JFrame {
 				setValuePanelEnabled(true);
 			}
 		});
-		
+
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -573,7 +566,7 @@ public class MainWindow extends JFrame {
 				setValuePanelEnabled(true);
 			}
 		});
-		
+
 		member.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -582,7 +575,153 @@ public class MainWindow extends JFrame {
 			}
 		});
 
+		min.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String min = String.valueOf(getActiveSet().min());
+				console.append("Мінімальний елемент: " + min + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		max.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String max = String.valueOf(getActiveSet().max());
+				console.append("Максимльний елемент: " + max + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		empty.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getActiveSet().empty();
+				console.append("Множину очищено \n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		union.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ISet unionSet = setA.union(setB);
+				console.append("Множина А: " + setA.toString() + "\n");
+				console.append("Множина B: " + setB.toString() + "\n");
+				console.append("Об'єднання: " + unionSet.toString() + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		intersection.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ISet intersectionSet = setA.intersection(setB);
+				console.append("Множина А: " + setA.toString() + "\n");
+				console.append("Множина B: " + setB.toString() + "\n");
+				console.append("Перетин : " + intersectionSet.toString() + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		difference.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ISet differenceSet = null;
+				String dif;
+
+				if (CURRENT_ACTIVE_SET == Constants.SET_A) {
+					differenceSet = setA.difference(setB);
+					dif = "A/B";
+				} else {
+					differenceSet = setB.difference(setA);
+					dif = "B/A";
+				}
+				console.append("Множина А: " + setA.toString() + "\n");
+				console.append("Множина B: " + setB.toString() + "\n");
+				console.append("Різниця " + dif + ": "
+						+ differenceSet.toString() + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+
+		merge.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ISet mergeSet = null;
+
+				if (CURRENT_ACTIVE_SET == Constants.SET_A) {
+					mergeSet = setA.merge(setB);
+				} else {
+					mergeSet = setB.merge(setA);
+				}
+
+				if (mergeSet == null) {
+					console.append("Результат невизначений" + "\n");
+				} else {
+					console.append("Множина А: " + setA.toString() + "\n");
+					console.append("Множина B: " + setB.toString() + "\n");
+					console.append("Злиття : " + mergeSet.toString() + "\n");
+				}
+				setValuePanelEnabled(false);
+			}
+		});
 		
+		equal.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				boolean res = setA.equal(setB);
+				String resS = String.valueOf(res).toUpperCase();
+				console.append("Рівність множин: " + resS + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+		
+		
+		toString.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A)? 
+						"Множина А:" : "Множина B:";
+				console.append(setName + "\n" + getActiveSet().toString() + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+		
+		power.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				console.append("Потужність: " + getActiveSet().getSize() + "\n");
+				setValuePanelEnabled(false);
+			}
+		});
+		
+		product.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				ArrayList<Pair<Object, Object>> prodList = new ArrayList<Pair<Object, Object>>();
+				String prod;
+
+				if (CURRENT_ACTIVE_SET == Constants.SET_A) {
+					prodList = setA.cartesianProduct(setB);
+					prod = "AxB";
+				} else {
+					prodList = setB.cartesianProduct(setA);
+					prod = "BxA";
+				}
+				console.append("Множина А: " + setA.toString() + "\n");
+				console.append("Множина B: " + setB.toString() + "\n");
+				console.append("Декартовий добуток " + prod + ": \n");
+				
+				for(Pair<Object, Object> val : prodList){
+					console.append("[" + val.getFirst() + "] [" + val.getSecond()+"]\n");
+				}
+				
+				setValuePanelEnabled(false);
+			}
+		});
+
 		operationsGroup.add(insert);
 		operationsGroup.add(delete);
 		operationsGroup.add(member);
@@ -594,9 +733,9 @@ public class MainWindow extends JFrame {
 		operationsGroup.add(difference);
 		operationsGroup.add(merge);
 		operationsGroup.add(equal);
+		operationsGroup.add(power);
+		operationsGroup.add(product);
 		operationsGroup.add(toString);
-		
-		
 
 		buttonPanel.add(insert);
 		buttonPanel.add(insert);
@@ -610,105 +749,105 @@ public class MainWindow extends JFrame {
 		buttonPanel.add(difference);
 		buttonPanel.add(merge);
 		buttonPanel.add(equal);
+		buttonPanel.add(power);
+		buttonPanel.add(product);
 		buttonPanel.add(toString);
-		
-		
-		
+
 		operationsPanel.add(buttonPanel);
-		
-		
+
 		valuePanel = new JPanel();
 		valuePanel.setLayout(null);
 		valuePanel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(), "Значення"));
 		valuePanel.setBounds(5, 370, 252, 50);
-		
+
 		valueField = new JTextField();
-		valueField.setBounds(5,20,185,20);
-		
+		valueField.setBounds(5, 20, 185, 20);
+
 		Icon applyIcon = new ImageIcon("res/apply_20.png");
-		
-		
+
 		okButton = new JButton(applyIcon);
-		okButton.setBounds(195,19,50,22);
+		okButton.setBounds(195, 19, 50, 22);
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A)? 
+						"Множина А:" : "Множина B:";
 				String val = valueField.getText();
 				switch (CURRENT_VAL_OPERATION) {
 				case Constants.VAL_INS:
-					
-					try{
-						SetFactory.insertToSet(getActiveSet(), val, CURRENT_DATA_TYPE);
-					}catch (Exception e2) {
-						JOptionPane.showMessageDialog(null, "Помилка зчитування. "
-								+ "Перевірте правильність типу даних", "Помилка",
-								JOptionPane.ERROR_MESSAGE);
+
+					try {
+						SetFactory.insertToSet(getActiveSet(), val,
+								CURRENT_DATA_TYPE);
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null,
+								"Помилка зчитування. "
+										+ "Перевірте правильність типу даних",
+								"Помилка", JOptionPane.ERROR_MESSAGE);
 					}
-					
+
 					valueField.setText("");
-					console.append(getActiveSet().toString()+"\n");
+					console.append(setName+"\n"+getActiveSet().toString() + "\n");
 					System.out.println(setA.toString());
 					break;
 				case Constants.VAL_DEL:
-					try{
-						SetFactory.deleteFromSet(getActiveSet(), val, CURRENT_DATA_TYPE);
-					}catch (Exception e2) {
-						JOptionPane.showMessageDialog(null, "Помилка зчитування. "
-								+ "Перевірте правильність типу даних", "Помилка",
-								JOptionPane.ERROR_MESSAGE);
+					try {
+						SetFactory.deleteFromSet(getActiveSet(), val,
+								CURRENT_DATA_TYPE);
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null,
+								"Помилка зчитування. "
+										+ "Перевірте правильність типу даних",
+								"Помилка", JOptionPane.ERROR_MESSAGE);
 					}
 					valueField.setText("");
-					console.append(getActiveSet().toString()+"\n");
+					console.append(setName+"\n"+getActiveSet().toString() + "\n");
 					System.out.println(setA.toString());
 					break;
 				case Constants.VAL_MEMB:
-					try{
-						boolean res = SetFactory.isMemb(getActiveSet(), val, CURRENT_DATA_TYPE);
+					try {
+						boolean res = SetFactory.isMemb(getActiveSet(), val,
+								CURRENT_DATA_TYPE);
 						String resS = String.valueOf(res).toUpperCase();
-						console.append(resS+"\n");
-					}catch (Exception e2) {
-						JOptionPane.showMessageDialog(null, "Помилка зчитування. "
-								+ "Перевірте правильність типу даних", "Помилка",
-								JOptionPane.ERROR_MESSAGE);
+						console.append(resS + "\n");
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null,
+								"Помилка зчитування. "
+										+ "Перевірте правильність типу даних",
+								"Помилка", JOptionPane.ERROR_MESSAGE);
 					}
 					valueField.setText("");
 					break;
 				default:
 					break;
 				}
-				
-				
-				
+
 			}
 		});
-		
-		
+
 		valuePanel.add(valueField);
 		valuePanel.add(okButton);
-		
+
 		setValuePanelEnabled(false);
 		operationsPanel.add(valuePanel);
-		
-		
 
 		this.add(operationsPanel);
 
 	}
-	
-	
-	private void setValuePanelEnabled(boolean val){
+
+	private void setValuePanelEnabled(boolean val) {
 		this.valuePanel.setEnabled(val);
 		this.valueField.setEditable(val);
 		this.okButton.setEnabled(val);
-		
+
 	}
-	
-	private ISet getActiveSet(){
+
+	private ISet getActiveSet() {
 		if (CURRENT_ACTIVE_SET == Constants.SET_A)
 			return setA;
-			else return setB;
+		else
+			return setB;
 	}
 
 	private void addConsolePanel() {
@@ -721,7 +860,7 @@ public class MainWindow extends JFrame {
 		console = new JTextArea(31, 20);
 
 		console.setBounds(5, 5, 260, 200);
-		console.setEditable(true); // set textArea non-editable
+		console.setEditable(false);
 
 		JScrollPane scroll = new JScrollPane(console);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

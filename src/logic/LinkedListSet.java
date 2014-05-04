@@ -1,5 +1,8 @@
 package logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import logic.list.LinkedListImp;
 
 
@@ -68,7 +71,10 @@ public class LinkedListSet<T extends Comparable<T>> implements ISet<T>{
 
 	@Override
 	public ISet<T> merge(ISet<T> b) {
-		// TODO Auto-generated method stub
+		ISet<T> intersectionSet = this.intersection(b); 
+		if (intersectionSet.getSize() == 0){
+			return this.union(b);
+		}
 		return null;
 	}
 
@@ -153,6 +159,24 @@ public class LinkedListSet<T extends Comparable<T>> implements ISet<T>{
 	@Override
 	public String toString(){
 		return this.set.toString();
+	}
+
+	@Override
+	public int getSize() {
+		return set.size();
+	}
+
+	@Override
+	public ArrayList<Pair<T, T>> cartesianProduct(ISet<T> b) {
+		ArrayList<Pair<T, T>> product = new ArrayList<Pair<T,T>>();
+		
+		for(T elA : this.set){
+			for(T elB : b.getList()){
+				product.add(new Pair(elA, elB));
+			}
+		}
+		
+		return product;
 	}
 	
 	
