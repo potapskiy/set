@@ -178,6 +178,17 @@ public class LinkedListSet<T extends Comparable<T>> implements ISet<T>{
 		
 		return product;
 	}
+
+	@Override
+	public int[] getCharacterVector() {
+		return null;
+	}
+
+	@Override
+	public String vectorToString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

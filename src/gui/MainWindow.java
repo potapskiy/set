@@ -45,6 +45,7 @@ import javax.swing.plaf.FontUIResource;
 import logic.ISet;
 import logic.Pair;
 import logic.SetFactory;
+import logic.list.LinkedListImp;
 
 import org.w3c.dom.stylesheets.StyleSheetList;
 
@@ -72,6 +73,7 @@ public class MainWindow extends JFrame {
 	private ISet setA = null;
 	private ISet setB = null;
 	private int vectorSetLen = 0;
+	public static LinkedListImp UNIVERSUM_SET;
 
 	private String fileNameASet = "";
 	private String fileNameBSet = "";

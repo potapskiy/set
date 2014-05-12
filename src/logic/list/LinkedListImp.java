@@ -13,20 +13,18 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 		listCount = 0;
 	}
 
-	public void add(E data) {
+	public int add(E data) {
 
 		if (head == null) {
 			head = new Node<E>(data);
 			listCount++;
-			return;
+			return 0;
 		}
-		
-		
-		
-		if (contains(data)){
-			return;
+
+		if (contains(data)) {
+			return getIndex(data);
 		}
-		
+
 		Node<E> temp = new Node<E>(data);
 		Node<E> current = head;
 		while (current.getNext() != null) {
@@ -34,77 +32,64 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 		}
 		current.setNext(temp);
 		listCount++;
+		return listCount - 1;
 	}
-	
-	
-	
+
 	public void addSorted(E data) {
-		
-		
-		
 
 		if (head == null) {
 			head = new Node<E>(data);
 			return;
 		}
-		
-		if (contains(data)){
+
+		if (contains(data)) {
 			return;
 		}
-		
-		
-		
-		
+
 		Node<E> temp = new Node<E>(data);
 		Node<E> current = head;
 		Node<E> prev = null;
-		
+
 		while (current != null) {
-			
-			
-			//System.out.println("STEP: compare" +current.data+" "
-			//+ data+ "  " +  current.compareTo(temp));
-			
+
+			// System.out.println("STEP: compare" +current.data+" "
+			// + data+ "  " + current.compareTo(temp));
+
 			int compateResult = current.compareTo(temp);
-			
-			if (compateResult == 0) return;
-			
-			if (compateResult > 0){
+
+			if (compateResult == 0)
+				return;
+
+			if (compateResult > 0) {
 				temp.setNext(current);
-				
-				if (prev != null){
+
+				if (prev != null) {
 					prev.setNext(temp);
-				}else{
+				} else {
 					head = temp;
 				}
 				listCount++;
 				return;
 			}
-			
+
 			prev = current;
 			current = current.getNext();
 		}
-		
-		
+
 		temp.setNext(null);
 		prev.setNext(temp);
 		listCount++;
-		
+
 		return;
 	}
-	
-	
-	
-	
 
 	public void add(E data, int index) {
-		
 
 		if (head == null) {
 			head = new Node<E>(data);
 			return;
 		}
-		
+
 		Node<E> temp = new Node<E>(data);
 		Node<E> current = head;
 		for (int i = 1; i < index && current.getNext() != null; i++) {
@@ -137,13 +122,29 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 		return current.getData();
 	}
 
+	public int getIndex(E x) {
+		if (head == null)
+			return -1;
+
+		int index = 0;
+		for (E tmp : this){
+			if (tmp.equals(x)){
+				return index;
+			}
+			index++;
+		}
+		
+		return -1;
+				
+	}
+
 	public boolean remove(Object o) {
-		
-		
-		if (head == null) return false;
-		
+
+		if (head == null)
+			return false;
+
 		Node<E> current = head;
-		
+
 		if (current.equals(o)) {
 			head = current.getNext();
 			listCount--;
@@ -173,12 +174,12 @@ public class LinkedListImp<E extends Comparable<E>> implements Iterable<E> {
 
 	public String toString() {
 		Node<E> current = head;
-		String output = "";
+		StringBuilder output = new StringBuilder();
 		while (current != null) {
-			output += "[" + current.getData().toString() + "]";
+			output.append("[" + current.getData().toString() + "]");
 			current = current.getNext();
 		}
-		return output;
+		return output.toString();
 	}
 
 	@Override

@@ -31,11 +31,15 @@ public interface ISet<T extends Comparable<T>> {
 	
 	public LinkedListImp<T> getList();
 	
+	public int[] getCharacterVector();
+	
 	public int getSize();
 	
 	public ArrayList<Pair<T, T>> cartesianProduct(ISet<T> b);
 	
 	@Override
 	public String toString();
+	
+	public String vectorToString();
 
 }
