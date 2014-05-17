@@ -80,9 +80,12 @@ public class MainWindow extends JFrame {
 
 	JLabel removeALabel;
 	JLabel removeBLabel;
+	JLabel univSetLenLabel;
+	JButton univSetOkButton;
 
 	JButton okButton;
 	JTextField valueField;
+	NumberField univSetLenField;
 	JPanel valuePanel;
 
 	public static void main(String[] args) throws HeadlessException,
@@ -199,6 +202,19 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("LIST");
 
+				CURRENT_SET_TYPE = Constants.LIST_TYPE;
+
+				UNIVERSUM_SET = null;
+
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+
+				univSetLenLabel.setEnabled(false);
+				univSetLenField.setEnabled(false);
+				univSetOkButton.setEnabled(false);
+
 			}
 		});
 
@@ -207,9 +223,63 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Vector");
+				UNIVERSUM_SET = null;
+
+				univSetLenLabel.setEnabled(true);
+				univSetLenField.setEnabled(true);
+				univSetOkButton.setEnabled(true);
 
 			}
 		});
+
+		JPanel univSetPanel = new JPanel();
+		univSetPanel.setLayout(null);
+
+		univSetLenLabel = new JLabel("Потужність:");
+		univSetLenLabel.setBounds(5, 0, 100, 25);
+
+		univSetLenField = new NumberField(6);
+		univSetLenField.setText("100");
+		univSetLenField.setBounds(95, 3, 85, 20);
+
+		Icon applyIcon = new ImageIcon("res/apply_20.png");
+
+		univSetOkButton = new JButton(applyIcon);
+		univSetOkButton.setBounds(185, 2, 50, 22);
+		univSetOkButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("OK");
+
+				int len = 0;
+				try {
+					len = Integer.valueOf(univSetLenField.getText());
+				} catch (Exception e) {
+					len = 0;
+				}
+
+				vectorSetLen = len;
+
+				CURRENT_SET_TYPE = Constants.CHARACTER_VACTOR_TYPE;
+
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+
+				System.out.println(len);
+
+			}
+		});
+
+		univSetLenLabel.setEnabled(false);
+		univSetLenField.setEnabled(false);
+		univSetOkButton.setEnabled(false);
+
+		univSetPanel.add(univSetLenLabel);
+		univSetPanel.add(univSetLenField);
+		univSetPanel.add(univSetOkButton);
 
 		listType.setSelected(true);
 		setTypeGroup.add(listType);
@@ -217,6 +287,8 @@ public class MainWindow extends JFrame {
 
 		typePanel.add(listType);
 		typePanel.add(vectorType);
+
+		typePanel.add(univSetPanel);
 
 		// ///////////////////////////////
 
@@ -437,9 +509,15 @@ public class MainWindow extends JFrame {
 
 	protected void fillSetA() {
 
-		setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
-				vectorSetLen);
+		if (UNIVERSUM_SET != null) {
+			setA.setList(UNIVERSUM_SET);
+		} else {
 
+			UNIVERSUM_SET = null;
+			setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+					vectorSetLen);
+		}
+		
 		if (!fileNameASet.isEmpty()) {
 
 			try {
@@ -454,15 +532,29 @@ public class MainWindow extends JFrame {
 
 			setAField.setText(fileNameASet);
 			removeALabel.setEnabled(true);
+
+			UNIVERSUM_SET = setA.getList();
+			if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+				setB.setList(UNIVERSUM_SET);
+			}
 		}
 
-		System.out.println(setA.toString());
+		System.out.println("UNI SET: " + UNIVERSUM_SET.toString());
 
 	}
 
 	protected void fillSetB() {
-		setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
-				vectorSetLen);
+		
+		
+		
+		if (UNIVERSUM_SET != null) {
+			setB.setList(UNIVERSUM_SET);
+		} else {
+
+			UNIVERSUM_SET = null;
+			setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+					vectorSetLen);
+		}
 
 		if (!fileNameBSet.isEmpty()) {
 
@@ -478,9 +570,14 @@ public class MainWindow extends JFrame {
 
 			setBField.setText(fileNameBSet);
 			removeBLabel.setEnabled(true);
+
+			UNIVERSUM_SET = setB.getList();
+			if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+				setA.setList(UNIVERSUM_SET);
+			}
 		}
 
-		System.out.println(setB.toString());
+		System.out.println("UNI SET: " + UNIVERSUM_SET.toString());
 
 	}
 
@@ -506,9 +603,15 @@ public class MainWindow extends JFrame {
 		setAButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+
+				if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+					setA.setList(UNIVERSUM_SET);
+				}
+
 				CURRENT_ACTIVE_SET = Constants.SET_A;
 				String setName = "Множина А:";
-				console.append(setName + "\n" + getActiveSet().toString() + "\n");	
+				console.append(setName + "\n" + getActiveSet().toString()
+						+ "\n");
 			}
 		});
 
@@ -517,8 +620,14 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_ACTIVE_SET = Constants.SET_B;
+
+				if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+					setB.setList(UNIVERSUM_SET);
+				}
+
 				String setName = "Множина B:";
-				console.append(setName + "\n" + getActiveSet().toString() + "\n");
+				console.append(setName + "\n" + getActiveSet().toString()
+						+ "\n");
 
 			}
 		});
@@ -668,7 +777,7 @@ public class MainWindow extends JFrame {
 				setValuePanelEnabled(false);
 			}
 		});
-		
+
 		equal.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -678,18 +787,18 @@ public class MainWindow extends JFrame {
 				setValuePanelEnabled(false);
 			}
 		});
-		
-		
+
 		toString.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A)? 
-						"Множина А:" : "Множина B:";
-				console.append(setName + "\n" + getActiveSet().toString() + "\n");
+				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A) ? "Множина А:"
+						: "Множина B:";
+				console.append(setName + "\n" + getActiveSet().toString()
+						+ "\n");
 				setValuePanelEnabled(false);
 			}
 		});
-		
+
 		power.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -697,11 +806,11 @@ public class MainWindow extends JFrame {
 				setValuePanelEnabled(false);
 			}
 		});
-		
+
 		product.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				ArrayList<Pair<Object, Object>> prodList = new ArrayList<Pair<Object, Object>>();
 				String prod;
 
@@ -715,11 +824,12 @@ public class MainWindow extends JFrame {
 				console.append("Множина А: " + setA.toString() + "\n");
 				console.append("Множина B: " + setB.toString() + "\n");
 				console.append("Декартовий добуток " + prod + ": \n");
-				
-				for(Pair<Object, Object> val : prodList){
-					console.append("[" + val.getFirst() + "] [" + val.getSecond()+"]\n");
+
+				for (Pair<Object, Object> val : prodList) {
+					console.append("[" + val.getFirst() + "] ["
+							+ val.getSecond() + "]\n");
 				}
-				
+
 				setValuePanelEnabled(false);
 			}
 		});
@@ -773,8 +883,8 @@ public class MainWindow extends JFrame {
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A)? 
-						"Множина А:" : "Множина B:";
+				String setName = (CURRENT_ACTIVE_SET == Constants.SET_A) ? "Множина А:"
+						: "Множина B:";
 				String val = valueField.getText();
 				switch (CURRENT_VAL_OPERATION) {
 				case Constants.VAL_INS:
@@ -790,22 +900,26 @@ public class MainWindow extends JFrame {
 					}
 
 					valueField.setText("");
-					console.append(setName+"\n"+getActiveSet().toString() + "\n");
-					System.out.println(setA.toString());
+					console.append(setName + "\n" + getActiveSet().toString()
+							+ "\n");
+
+					UNIVERSUM_SET = getActiveSet().getList();
 					break;
 				case Constants.VAL_DEL:
 					try {
 						SetFactory.deleteFromSet(getActiveSet(), val,
 								CURRENT_DATA_TYPE);
 					} catch (Exception e2) {
+						e2.printStackTrace();
 						JOptionPane.showMessageDialog(null,
 								"Помилка зчитування. "
 										+ "Перевірте правильність типу даних",
 								"Помилка", JOptionPane.ERROR_MESSAGE);
 					}
 					valueField.setText("");
-					console.append(setName+"\n"+getActiveSet().toString() + "\n");
-					System.out.println(setA.toString());
+					UNIVERSUM_SET = getActiveSet().getList();
+					console.append(setName + "\n" + getActiveSet().toString()
+							+ "\n");
 					break;
 				case Constants.VAL_MEMB:
 					try {

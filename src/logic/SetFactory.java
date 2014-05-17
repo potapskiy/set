@@ -36,6 +36,30 @@ public class SetFactory {
 			}
 
 		}
+		
+		
+		
+		
+		if (setType == Constants.CHARACTER_VACTOR_TYPE) {
+
+			switch (dataType) {
+			case Constants.INT_TYPE:
+				return new CharVectorSet<Integer>(length);
+
+			case Constants.DOUBLE_TYPE:
+				return new CharVectorSet<Double>(length);
+
+			case Constants.STRING_TYPE:
+				return new CharVectorSet<String>(length);
+
+			case Constants.CHAR_TYPE:
+				return new CharVectorSet<Character>(length);
+
+			default:
+				return null;
+			}
+
+		}
 
 		return set;
 	}

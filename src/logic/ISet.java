@@ -31,6 +31,8 @@ public interface ISet<T extends Comparable<T>> {
 	
 	public LinkedListImp<T> getList();
 	
+	public void setList(LinkedListImp<T> set);
+	
 	public int[] getCharacterVector();
 	
 	public int getSize();

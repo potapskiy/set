@@ -190,5 +190,11 @@ public class LinkedListSet<T extends Comparable<T>> implements ISet<T>{
 		return null;
 	}
 	
+	@Override
+	public void setList(LinkedListImp<T> set) {
+		this.set = set;
+		
+	}
+	
 	
 }
