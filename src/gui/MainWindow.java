@@ -87,12 +87,20 @@ public class MainWindow extends JFrame {
 	JTextField valueField;
 	NumberField univSetLenField;
 	JPanel valuePanel;
+	
+	
+	JRadioButton intType;
+	JRadioButton doubleType; 
+	JRadioButton stringType; 
+	JRadioButton charType;
+	JButton setAFileButton;
+	JButton setBFileButton;
 
-	public static void main(String[] args) throws HeadlessException,
-			AWTException {
-
-		MainWindow.getInstance();
-	}
+//	public static void main(String[] args) throws HeadlessException,
+//			AWTException {
+//
+//		MainWindow.getInstance();
+//	}
 
 	protected MainWindow() throws HeadlessException, AWTException {
 
@@ -228,6 +236,8 @@ public class MainWindow extends JFrame {
 				univSetLenLabel.setEnabled(true);
 				univSetLenField.setEnabled(true);
 				univSetOkButton.setEnabled(true);
+				
+				optionsEnable(false);
 
 			}
 		});
@@ -242,8 +252,15 @@ public class MainWindow extends JFrame {
 		univSetLenField.setText("100");
 		univSetLenField.setBounds(95, 3, 85, 20);
 
-		Icon applyIcon = new ImageIcon("res/apply_20.png");
-
+		Icon applyIcon = null;
+		
+		String path = "res/apply_20.png";
+		
+		try{
+			applyIcon = new ImageIcon(getClass().getClassLoader().getResource(path));
+		}catch(Exception e){
+			applyIcon = new ImageIcon("res/apply_20.png");
+		}
 		univSetOkButton = new JButton(applyIcon);
 		univSetOkButton.setBounds(185, 2, 50, 22);
 		univSetOkButton.addActionListener(new ActionListener() {
@@ -260,6 +277,7 @@ public class MainWindow extends JFrame {
 				}
 
 				vectorSetLen = len;
+				UNIVERSUM_SET = null;
 
 				CURRENT_SET_TYPE = Constants.CHARACTER_VACTOR_TYPE;
 
@@ -267,7 +285,9 @@ public class MainWindow extends JFrame {
 						vectorSetLen);
 				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
 						vectorSetLen);
-
+				
+				optionsEnable(true);
+				
 				System.out.println(len);
 
 			}
@@ -300,10 +320,10 @@ public class MainWindow extends JFrame {
 				BorderFactory.createEtchedBorder(), "Тип даних"));
 		dataTypePanel.setBounds(5, 120, 250, 100);
 
-		JRadioButton intType = new JRadioButton("Цілі");
-		JRadioButton doubleType = new JRadioButton("Дробові");
-		JRadioButton stringType = new JRadioButton("Рядки");
-		JRadioButton charType = new JRadioButton("Символи");
+		intType = new JRadioButton("Цілі");
+		doubleType = new JRadioButton("Дробові");
+		stringType = new JRadioButton("Рядки");
+		charType = new JRadioButton("Символи");
 
 		ButtonGroup dataTypeGroup = new ButtonGroup();
 		intType.addActionListener(new ActionListener() {
@@ -311,8 +331,15 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_DATA_TYPE = Constants.INT_TYPE;
-				fillSetA();
-				fillSetB();
+				//fillSetA();
+				//fillSetB();
+				
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				UNIVERSUM_SET = null;
+				fliesCompotentEnable(false);
 			}
 		});
 
@@ -321,8 +348,14 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_DATA_TYPE = Constants.DOUBLE_TYPE;
-				fillSetA();
-				fillSetB();
+				//fillSetA();
+				//fillSetB();
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				UNIVERSUM_SET = null;
+				fliesCompotentEnable(false);
 			}
 		});
 		stringType.addActionListener(new ActionListener() {
@@ -330,8 +363,14 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_DATA_TYPE = Constants.STRING_TYPE;
-				fillSetA();
-				fillSetB();
+//				fillSetA();
+//				fillSetB();
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				UNIVERSUM_SET = null;
+				fliesCompotentEnable(false);
 			}
 		});
 
@@ -340,8 +379,14 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_DATA_TYPE = Constants.CHAR_TYPE;
-				fillSetA();
-				fillSetB();
+//				fillSetA();
+//				fillSetB();
+				setA = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				setB = SetFactory.getSet(CURRENT_SET_TYPE, CURRENT_DATA_TYPE,
+						vectorSetLen);
+				UNIVERSUM_SET = null;
+				fliesCompotentEnable(false);
 			}
 		});
 
@@ -375,7 +420,7 @@ public class MainWindow extends JFrame {
 		setAField.setEditable(false);
 		filePanel.add(setAField);
 
-		JButton setAFileButton = new JButton("Файл");
+		setAFileButton = new JButton("Файл");
 		setAFileButton.setBounds(155, 44, 70, 23);
 
 		setAFileButton.addActionListener(new ActionListener() {
@@ -411,7 +456,14 @@ public class MainWindow extends JFrame {
 			}
 		});
 
-		ImageIcon icon = new ImageIcon("res/delete_16.png");
+		ImageIcon icon = null;
+		
+		String deleteIcon = "res/delete_16.png";
+		try{
+			icon = new ImageIcon(getClass().getClassLoader().getResource(deleteIcon));
+		}catch(Exception e){
+			icon = new ImageIcon("res/delete_16.png");
+		}
 		removeALabel = new JLabel(icon);
 		removeALabel.setToolTipText("Видалити множину");
 		removeALabel.setEnabled(false);
@@ -444,7 +496,7 @@ public class MainWindow extends JFrame {
 		setBField.setEditable(false);
 		filePanel.add(setBField);
 
-		JButton setBFileButton = new JButton("Файл");
+		setBFileButton = new JButton("Файл");
 		setBFileButton.setBounds(155, 94, 70, 23);
 
 		setBFileButton.addActionListener(new ActionListener() {
@@ -507,6 +559,32 @@ public class MainWindow extends JFrame {
 
 	}
 
+	
+	
+	private void optionsEnable(boolean enabled){
+		intType.setEnabled(enabled);
+		doubleType.setEnabled(enabled);
+		stringType.setEnabled(enabled);
+		charType.setEnabled(enabled);
+		setAFileButton.setEnabled(enabled);
+		setBFileButton.setEnabled(enabled);
+
+	}
+	private void fliesCompotentEnable(boolean enabled){
+		
+		fileNameBSet = "";
+		setBField.setText("");
+		setBField.setEnabled(enabled);
+		removeBLabel.setEnabled(enabled);
+		
+		fileNameASet = "";
+		setAField.setText("");
+		setAField.setEnabled(enabled);
+		removeALabel.setEnabled(enabled);
+		
+		
+		
+	}
 	protected void fillSetA() {
 
 		if (UNIVERSUM_SET != null) {
@@ -604,7 +682,9 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+				if ((CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE)&&(UNIVERSUM_SET != null)) {
+					
+					
 					setA.setList(UNIVERSUM_SET);
 				}
 
@@ -621,7 +701,7 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				CURRENT_ACTIVE_SET = Constants.SET_B;
 
-				if (CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE) {
+				if ((CURRENT_SET_TYPE == Constants.CHARACTER_VACTOR_TYPE)&&(UNIVERSUM_SET != null)) {
 					setB.setList(UNIVERSUM_SET);
 				}
 
@@ -876,8 +956,16 @@ public class MainWindow extends JFrame {
 		valueField = new JTextField();
 		valueField.setBounds(5, 20, 185, 20);
 
-		Icon applyIcon = new ImageIcon("res/apply_20.png");
+		
+		Icon applyIcon = null;
 
+		String apply = "res/apply_20.png";
+		
+		try{
+			applyIcon = new ImageIcon(getClass().getClassLoader().getResource(apply));
+		}catch(Exception e){
+			applyIcon = new ImageIcon("res/apply_20.png");
+		}
 		okButton = new JButton(applyIcon);
 		okButton.setBounds(195, 19, 50, 22);
 		okButton.addActionListener(new ActionListener() {
@@ -893,6 +981,8 @@ public class MainWindow extends JFrame {
 						SetFactory.insertToSet(getActiveSet(), val,
 								CURRENT_DATA_TYPE);
 					} catch (Exception e2) {
+						e2.printStackTrace();
+						System.out.println("data " + CURRENT_DATA_TYPE);
 						JOptionPane.showMessageDialog(null,
 								"Помилка зчитування. "
 										+ "Перевірте правильність типу даних",
