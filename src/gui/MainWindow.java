@@ -69,7 +69,9 @@ public class MainWindow extends JFrame {
 
 	public static int CURRENT_ACTIVE_SET = Constants.SET_A;
 	public static int CURRENT_VAL_OPERATION;
-
+	
+	public static int At =  587;
+	
 	private ISet setA = null;
 	private ISet setB = null;
 	private int vectorSetLen = 0;
